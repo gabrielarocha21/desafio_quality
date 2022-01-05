@@ -15,13 +15,13 @@ import java.util.List;
 public class HouseDTO {
 
     private String name;
-    private DistrictEntity district;
+    private String district;
     private List<RoomEntity> roomsList;
 
     public static HouseDTO convertToDTO(HouseEntity houseEntity) {
         return HouseDTO.builder()
                 .name(houseEntity.getName())
-                .district(houseEntity.getDistrict())
+                .district(houseEntity.getDistrict().getDistrict())
                 .roomsList(houseEntity.getRoomsList())
                 .build();
     }

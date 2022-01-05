@@ -22,7 +22,6 @@ public class HouseEntity {
         return HouseEntity.builder()
                 .name(houseDTO.getName())
                 .roomsList(houseDTO.getRoomsList())
-                .district(houseDTO.getDistrict())
                 .build();
     }
 
