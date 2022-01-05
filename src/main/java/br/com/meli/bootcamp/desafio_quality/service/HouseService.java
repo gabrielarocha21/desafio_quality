@@ -1,5 +1,6 @@
 package br.com.meli.bootcamp.desafio_quality.service;
 
+import br.com.meli.bootcamp.desafio_quality.entities.DistrictEntity;
 import br.com.meli.bootcamp.desafio_quality.entities.HouseEntity;
 import br.com.meli.bootcamp.desafio_quality.entities.RoomEntity;
 import br.com.meli.bootcamp.desafio_quality.repositories.HouseRepository;
@@ -18,9 +19,11 @@ import java.util.Map;
 public class HouseService {
     private HouseRepository houseRepository;
 
-
     @Autowired
     RoomService roomService;
+
+    @Autowired
+    DistrictService districtService;
 
     public HouseService() {
         this.houseRepository = new HouseRepository();
@@ -75,5 +78,12 @@ public class HouseService {
         }
 
         return map;
+    }
+
+    public HouseEntity save(HouseEntity houseEntity) {
+        DistrictEntity districtEntity = houseEntity.getDistrict();
+        districtService.findDistrict(districtEntity.getDistrict());
+
+        return this.houseRepository.save(houseEntity);
     }
 }

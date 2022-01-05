@@ -22,10 +22,7 @@ public class HouseRepository {
 
     }
 
-    public HouseEntity save(HouseEntity houseEntity) throws RuntimeException {
-        DistrictEntity districtEntity = houseEntity.getDistrict();
-        districtRepository.findByName(districtEntity.getDistrict());
-
+    public HouseEntity save(HouseEntity houseEntity) {
         this.houseEntityList.add(houseEntity);
         return houseEntity;
     }
