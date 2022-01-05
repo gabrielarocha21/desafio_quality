@@ -1,6 +1,7 @@
 package br.com.meli.bootcamp.desafio_quality.repositories;
 
 import br.com.meli.bootcamp.desafio_quality.entities.DistrictEntity;
+import br.com.meli.bootcamp.desafio_quality.exceptions.DistrictNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -22,7 +23,7 @@ public class DistrictRepository {
 
     public DistrictEntity findByName(String name) throws RuntimeException{
         return districtEntityList.stream()
-                .filter(d -> d.getDistrict().equals(name)).findFirst().orElseThrow(RuntimeException::new);
+                .filter(d -> d.getDistrict().equals(name)).findFirst().orElseThrow(DistrictNotFoundException::new);
     }
 
 }
