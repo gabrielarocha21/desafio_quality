@@ -1,6 +1,5 @@
 package br.com.meli.bootcamp.desafio_quality.entities;
 
-import br.com.meli.bootcamp.desafio_quality.DTO.DistrictDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +14,4 @@ public class DistrictEntity {
     private String district;
     private BigDecimal valueDistrictM2;
 
-    public DistrictEntity convertToEntity(DistrictDTO districtDTO) {
-        return DistrictEntity.builder()
-                .district(districtDTO.getDistrict())
-                .build();
-    }
 }

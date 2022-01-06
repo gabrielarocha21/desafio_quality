@@ -22,10 +22,12 @@ public class RoomDTO {
 
     @NotNull(message = "O comprimento do comodo nao pode estar vazio")
     @DecimalMax(value = "33", message = "O comprimento maximo permitido por comodo e de 33 metros")
+    @DecimalMin(value="0.1", message = "O comprimento minimo maior que 0")
     private Double length;
 
     @NotNull(message = "A largura do comodo nao pode estar vazia")
     @DecimalMax(value = "25", message = "A largura maxima permitda e de por comodo e de 25 metros")
+    @DecimalMin(value="0.1", message = "O largura minimo maior que 0")
     private Double width;
 
     public static RoomDTO convertToDTO(RoomEntity roomEntity){

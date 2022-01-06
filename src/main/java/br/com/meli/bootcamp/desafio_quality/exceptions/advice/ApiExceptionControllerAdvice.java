@@ -32,7 +32,6 @@ public class ApiExceptionControllerAdvice {
     public ResponseEntity<StandardError> districtNotFound(MethodArgumentNotValidException e, HttpServletRequest request) {
         ValidationError err = new ValidationError(System.currentTimeMillis(),
                 HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation error",
-//                e.getMessage()
                 "Erro de validação na requisição.",
                 request.getRequestURI());
         for (FieldError x : e.getBindingResult().getFieldErrors()) {
