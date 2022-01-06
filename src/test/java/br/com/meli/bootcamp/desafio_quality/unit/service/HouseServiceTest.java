@@ -218,28 +218,10 @@ public class HouseServiceTest {
                         this.roomEntityList,
                         districtEntity);
 
-        List<RoomEntity> roomEntityList1 =  Arrays.asList(
-                new RoomEntity("Sala", 3.0,2.0)
-                , new RoomEntity("Quarto", 4.0, 2.0)
-                , new RoomEntity("Cozinha", 2.0, 2.0));
-
-        DistrictEntity districtEntity1 = new  DistrictEntity("APA", new BigDecimal(10));
-
-        HouseEntity houseEntity1 =
-                new HouseEntity("Casa 1",
-                        this.roomEntityList,
-                        districtEntity1);
-
-        this.houseRepository.setHouseEntityList(Arrays.asList(houseEntity));
-
-        when(houseRepository.findByName(any())).thenReturn(houseEntity);
-        when(this.districtService.findDistrict(any())).thenReturn( new DistrictEntity( ));
-
-
-        this.houseEntity.getDistrict().setDistrict("APA");
+        when(this.districtService.findDistrict(any())).thenThrow(DistrictNotFoundException.class);
 
         assertThrows(DistrictNotFoundException.class, () -> {
-            this.houseService.save(houseEntity1);
+            this.houseService.save(houseEntity);
         });
     }
 
