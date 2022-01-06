@@ -95,7 +95,25 @@ public class HouseServiceTest {
 
         RoomEntity roomEntity = this.houseService.getBiggestRoom(any());
         assertEquals("Sala", roomEntity.getName());
+    }
 
+    @Test
+    public void getBiggestRoomTest(){
+        this.roomEntityList =  Arrays.asList(
+                new RoomEntity("Sala", 2.0,2.0)
+                , new RoomEntity("Quarto", 3.0, 2.0)
+                , new RoomEntity("Cozinha", 5.0, 2.0));
+
+        this.houseEntity =
+                new HouseEntity("Casa 1",
+                        this.roomEntityList,
+                        new DistrictEntity("Ipiranga",new BigDecimal(10)));
+
+        when(houseRepository.findByName(any())).thenReturn(houseEntity);
+        when(roomService.getArea(any())).thenCallRealMethod();
+
+        RoomEntity roomEntity = this.houseService.getBiggestRoom(any());
+        assertEquals("Cozinha", roomEntity.getName());
     }
 
     @Test
@@ -223,6 +241,12 @@ public class HouseServiceTest {
         assertThrows(DistrictNotFoundException.class, () -> {
             this.houseService.save(houseEntity);
         });
+    }
+
+    @Test
+    public void constructorTest(){
+        HouseService houseService = new HouseService();
+        assertNotNull(houseService);
     }
 
 }
