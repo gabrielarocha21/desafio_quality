@@ -6,13 +6,11 @@ import br.com.meli.bootcamp.desafio_quality.entities.RoomEntity;
 import br.com.meli.bootcamp.desafio_quality.exceptions.DistrictNotFoundException;
 import br.com.meli.bootcamp.desafio_quality.repositories.HouseRepository;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor

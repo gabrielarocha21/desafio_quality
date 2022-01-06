@@ -1,9 +1,7 @@
 package br.com.meli.bootcamp.desafio_quality.controller;
 
 import br.com.meli.bootcamp.desafio_quality.DTO.HouseDTO;
-import br.com.meli.bootcamp.desafio_quality.DTO.RoomDTO;
 import br.com.meli.bootcamp.desafio_quality.entities.HouseEntity;
-import br.com.meli.bootcamp.desafio_quality.exceptions.DistrictNotFoundException;
 import br.com.meli.bootcamp.desafio_quality.service.DistrictService;
 import br.com.meli.bootcamp.desafio_quality.service.HouseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.file.DirectoryIteratorException;
 
 @RestController
 @RequestMapping("/")

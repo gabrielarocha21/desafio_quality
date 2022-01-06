@@ -1,13 +1,5 @@
 package br.com.meli.bootcamp.desafio_quality.exceptions;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.validation.Valid;
-import javax.validation.Validation;
-import javax.validation.constraints.NotNull;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 

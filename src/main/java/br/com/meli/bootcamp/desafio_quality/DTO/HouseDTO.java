@@ -1,16 +1,12 @@
 package br.com.meli.bootcamp.desafio_quality.DTO;
 
-import br.com.meli.bootcamp.desafio_quality.entities.DistrictEntity;
 import br.com.meli.bootcamp.desafio_quality.entities.HouseEntity;
-import br.com.meli.bootcamp.desafio_quality.entities.RoomEntity;
 import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,6 +1,5 @@
 package br.com.meli.bootcamp.desafio_quality.repositories;
 
-import br.com.meli.bootcamp.desafio_quality.entities.DistrictEntity;
 import br.com.meli.bootcamp.desafio_quality.entities.HouseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

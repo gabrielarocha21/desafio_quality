@@ -1,6 +1,5 @@
 package br.com.meli.bootcamp.desafio_quality.service;
 
-import br.com.meli.bootcamp.desafio_quality.DTO.DistrictDTO;
 import br.com.meli.bootcamp.desafio_quality.entities.DistrictEntity;
 import br.com.meli.bootcamp.desafio_quality.exceptions.DistrictNotFoundException;
 import br.com.meli.bootcamp.desafio_quality.repositories.DistrictRepository;

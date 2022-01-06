@@ -1,11 +1,11 @@
 package br.com.meli.bootcamp.desafio_quality.entities;
 
 import br.com.meli.bootcamp.desafio_quality.DTO.HouseDTO;
-import br.com.meli.bootcamp.desafio_quality.DTO.RoomDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
