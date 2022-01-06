@@ -21,7 +21,7 @@ public class DistrictRepository {
         );
     }
 
-    public DistrictEntity findByName(String name) throws RuntimeException{
+    public DistrictEntity findByName(String name){
         return districtEntityList.stream()
                 .filter(d -> d.getDistrict().equals(name)).findFirst().orElseThrow(DistrictNotFoundException::new);
     }

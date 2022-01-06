@@ -3,6 +3,7 @@ package br.com.meli.bootcamp.desafio_quality.service;
 import br.com.meli.bootcamp.desafio_quality.entities.DistrictEntity;
 import br.com.meli.bootcamp.desafio_quality.entities.HouseEntity;
 import br.com.meli.bootcamp.desafio_quality.entities.RoomEntity;
+import br.com.meli.bootcamp.desafio_quality.exceptions.DistrictNotFoundException;
 import br.com.meli.bootcamp.desafio_quality.repositories.HouseRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -37,11 +38,11 @@ public class HouseService {
     public Double getArea(String propName) {
 
         HouseEntity houseEntity = this.houseRepository.findByName(propName);
-        Double areaTotal = 0.0;
+        Double totalArea = 0.0;
         for (RoomEntity r : houseEntity.getRoomsList()) {
-            areaTotal += this.roomService.getArea(r);
+            totalArea += this.roomService.getArea(r);
         }
-        return areaTotal;
+        return totalArea;
     }
 
     public RoomEntity getBiggestRoom(String propName) {
@@ -63,11 +64,9 @@ public class HouseService {
 
     public BigDecimal getValue(String propName) {
         HouseEntity houseEntity = this.houseRepository.findByName(propName);
-        Double areaTotal = this.getArea(propName);
+        Double totalArea = this.getArea(propName);
         BigDecimal valueM2 = houseEntity.getDistrict().getValueDistrictM2();
-        BigDecimal valorTotal = new BigDecimal(String.valueOf(valueM2.multiply(new BigDecimal(areaTotal))));
-
-        return valorTotal;
+        return new BigDecimal(String.valueOf(valueM2.multiply(new BigDecimal(totalArea))));
     }
 
     public Map<RoomEntity, Double> getAreaPerRoom(String propName) {
@@ -80,7 +79,7 @@ public class HouseService {
         return map;
     }
 
-    public HouseEntity save(HouseEntity houseEntity) {
+    public HouseEntity save(HouseEntity houseEntity) throws DistrictNotFoundException {
         DistrictEntity districtEntity = houseEntity.getDistrict();
         districtService.findDistrict(districtEntity.getDistrict());
 

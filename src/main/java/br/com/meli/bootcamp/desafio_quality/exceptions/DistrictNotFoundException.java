@@ -1,6 +1,8 @@
 package br.com.meli.bootcamp.desafio_quality.exceptions;
 
-public class DistrictNotFoundException extends RuntimeException{
+import java.util.function.Supplier;
+
+public class DistrictNotFoundException extends RuntimeException {
 
     public DistrictNotFoundException(String message){
         super(message);
