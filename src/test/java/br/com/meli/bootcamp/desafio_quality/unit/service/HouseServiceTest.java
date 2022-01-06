@@ -48,7 +48,7 @@ public class HouseServiceTest {
     private List<RoomEntity> roomEntityList;
 
     @BeforeEach
-    void setUp(){
+     void setUp(){
         MockitoAnnotations.openMocks(this);
 
     }
