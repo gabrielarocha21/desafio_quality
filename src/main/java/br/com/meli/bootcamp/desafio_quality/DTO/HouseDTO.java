@@ -20,7 +20,7 @@ public class HouseDTO {
 
     @NotEmpty(message = "O nome da propriedade nao pode estar vazio")
     @Size(max = 30, message = "O comprimento do nome nao pode exceder 30 caracteres")
-    @Pattern(regexp = "^[A-Z].*$", message = "O nome da propriedade deve começar com uma letra maiuscula")
+    @Pattern(regexp = "^[A-Z].*$", message = "O nome da propriedade deve comecar com uma letra maiuscula")
     private String name;
 
     @NotEmpty(message = "O bairro nao pode estar vazio")

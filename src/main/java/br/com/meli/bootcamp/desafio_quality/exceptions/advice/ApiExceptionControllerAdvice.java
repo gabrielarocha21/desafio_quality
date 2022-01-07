@@ -23,7 +23,7 @@ public class ApiExceptionControllerAdvice {
     @ExceptionHandler(DistrictNotFoundException.class)
     public ResponseEntity<StandardError> districtNotFound(DistrictNotFoundException e, HttpServletRequest request) {
         StandardError err = new StandardError(System.currentTimeMillis(),
-                HttpStatus.NOT_FOUND.value(), "District not found", "Bairro não localizado no sistema", request.getRequestURI());
+                HttpStatus.NOT_FOUND.value(), "District not found", "Bairro nao localizado no sistema", request.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
 
@@ -32,7 +32,7 @@ public class ApiExceptionControllerAdvice {
     public ResponseEntity<StandardError> districtNotFound(MethodArgumentNotValidException e, HttpServletRequest request) {
         ValidationError err = new ValidationError(System.currentTimeMillis(),
                 HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation error",
-                "Erro de validação na requisição.",
+                "Erro de validacao na requisicao.",
                 request.getRequestURI());
         for (FieldError x : e.getBindingResult().getFieldErrors()) {
             err.addError(x.getField(), x.getDefaultMessage());

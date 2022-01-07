@@ -6,6 +6,7 @@ import br.com.meli.bootcamp.desafio_quality.entities.DistrictEntity;
 import br.com.meli.bootcamp.desafio_quality.entities.HouseEntity;
 import br.com.meli.bootcamp.desafio_quality.entities.RoomEntity;
 import br.com.meli.bootcamp.desafio_quality.exceptions.DistrictNotFoundException;
+import br.com.meli.bootcamp.desafio_quality.exceptions.ValidationError;
 import br.com.meli.bootcamp.desafio_quality.repositories.DistrictRepository;
 import br.com.meli.bootcamp.desafio_quality.repositories.HouseRepository;
 import br.com.meli.bootcamp.desafio_quality.service.DistrictService;
@@ -13,6 +14,7 @@ import br.com.meli.bootcamp.desafio_quality.service.HouseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -34,6 +36,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -87,7 +92,7 @@ public class IntegrationTests {
     }
 
     @Test
-    public  void testPostRegisterHouseShouldThrowMethodArgumentNotValidException() throws Exception {
+    public  void testPostRegisterHouseShouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldNameWithoutUpperCase() throws Exception {
 
         String payloadJson = "{\n" +
                 "    \"name\": \"casa 1\",\n" +
@@ -111,17 +116,90 @@ public class IntegrationTests {
                 "    ]\n" +
                 "}";
 
-        MvcResult response = this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payloadJson))
                 .andDo(print()).andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O nome da propriedade deve comecar com uma letra maiuscula"));
+                })
                 .andReturn();
-        System.out.println(" ============= PRINT : " + response.getResponse());
-        System.out.println(" ============= PRINT : " + response.getResponse().getContentAsString());
-        System.out.println(" ============= PRINT : " + MockMvcResultMatchers.jsonPath("$.message").value("Erro de validação na requisição."));
+    }
 
+    @Test
+    public  void testPostRegisterHouseShouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldNameEmpty() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O nome da propriedade nao pode estar vazio"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void testPostRegisterHouseShouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldNameMaxSize() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Mais de 30 caracteres - Mais de 30 caracteres - Mais de 30 caracteres - Mais de 30 caracteres - Mais de 30 caracteres - Mais de 30 caracteres\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O comprimento do nome nao pode exceder 30 caracteres"));
+                })
+                .andReturn();
     }
 
     @Test
