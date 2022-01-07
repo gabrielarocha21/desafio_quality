@@ -50,45 +50,49 @@ public class HouseServiceTest {
     @BeforeEach
      void setUp(){
         MockitoAnnotations.openMocks(this);
-
     }
 
-
     @Test
-    public void getArea(){
+    public void shouldReturnTheArea(){
 
+        this.roomEntityList = Arrays.asList(
+                RoomEntity.builder().name("Sala").length(2.0).width(2.0).build(),
+                RoomEntity.builder().name("Quarto").length(2.0).width(2.0).build(),
+                RoomEntity.builder().name("Cozinha").length(2.0).width(2.0).build());
 
-        this.roomEntityList =  Arrays.asList(
-                new RoomEntity("Sala", 2.0,2.0)
-                , new RoomEntity("Quarto", 2.0, 2.0)
-                , new RoomEntity("Cozinha", 2.0, 2.0));
-
-        this.houseEntity =
-                new HouseEntity("Casa 1", this.roomEntityList,
-                        new DistrictEntity("Ipiranga",new BigDecimal(10)));
-
-
+        this.houseEntity = HouseEntity.builder()
+                .name("Casa 1")
+                .roomsList(this.roomEntityList)
+                .district(
+                        DistrictEntity.builder()
+                                .district("Ipiranga")
+                                .valueDistrictM2(new BigDecimal(10.00))
+                                .build())
+                .build();
 
         when(houseRepository.findByName(any())).thenReturn(houseEntity);
         when(roomService.getArea(any())).thenReturn(4.0);
         Double area = this.houseService.getArea(any());
         assertEquals(12, area);
-
     }
 
     @Test
-    public void getBiggestRoom(){
+    public void shouldReturnTheLivingRoomAsTheBiggestRoom(){
 
-        this.roomEntityList =  Arrays.asList(
-                new RoomEntity("Sala", 3.0,2.0)
-                , new RoomEntity("Quarto", 2.0, 2.0)
-                , new RoomEntity("Cozinha", 2.0, 2.0));
+        this.roomEntityList = Arrays.asList(
+                RoomEntity.builder().name("Sala").length(3.0).width(2.0).build(),
+                RoomEntity.builder().name("Quarto").length(2.0).width(2.0).build(),
+                RoomEntity.builder().name("Cozinha").length(2.0).width(2.0).build());
 
-        this.houseEntity =
-                new HouseEntity("Casa 1",
-                        this.roomEntityList,
-                        new DistrictEntity("Ipiranga",new BigDecimal(10)));
-
+        this.houseEntity = HouseEntity.builder()
+                .name("Casa 1")
+                .roomsList(this.roomEntityList)
+                .district(
+                        DistrictEntity.builder()
+                                .district("Ipiranga")
+                                .valueDistrictM2(new BigDecimal(10.00))
+                                .build())
+                .build();
 
         when(houseRepository.findByName(any())).thenReturn(houseEntity);
         when(roomService.getArea(any())).thenCallRealMethod();
@@ -98,16 +102,21 @@ public class HouseServiceTest {
     }
 
     @Test
-    public void getBiggestRoomTest(){
-        this.roomEntityList =  Arrays.asList(
-                new RoomEntity("Sala", 2.0,2.0)
-                , new RoomEntity("Quarto", 3.0, 2.0)
-                , new RoomEntity("Cozinha", 5.0, 2.0));
+    public void shouldReturnTheKitchenAsTheBiggestRoom(){
+        this.roomEntityList = Arrays.asList(
+                RoomEntity.builder().name("Sala").length(2.0).width(2.0).build(),
+                RoomEntity.builder().name("Quarto").length(3.0).width(2.0).build(),
+                RoomEntity.builder().name("Cozinha").length(5.0).width(2.0).build());
 
-        this.houseEntity =
-                new HouseEntity("Casa 1",
-                        this.roomEntityList,
-                        new DistrictEntity("Ipiranga",new BigDecimal(10)));
+        this.houseEntity = HouseEntity.builder()
+                .name("Casa 1")
+                .roomsList(this.roomEntityList)
+                .district(
+                        DistrictEntity.builder()
+                                .district("Ipiranga")
+                                .valueDistrictM2(new BigDecimal(10.00))
+                                .build())
+                .build();
 
         when(houseRepository.findByName(any())).thenReturn(houseEntity);
         when(roomService.getArea(any())).thenCallRealMethod();
@@ -117,18 +126,22 @@ public class HouseServiceTest {
     }
 
     @Test
-    public void getValue(){
+    public void shouldReturnTheValue(){
 
-        this.roomEntityList =  Arrays.asList(
-                new RoomEntity("Sala", 2.0,2.0)
-                , new RoomEntity("Quarto", 2.0, 2.0)
-                , new RoomEntity("Cozinha", 2.0, 2.0));
+        this.roomEntityList = Arrays.asList(
+                RoomEntity.builder().name("Sala").length(2.0).width(2.0).build(),
+                RoomEntity.builder().name("Quarto").length(2.0).width(2.0).build(),
+                RoomEntity.builder().name("Cozinha").length(2.0).width(2.0).build());
 
-        this.houseEntity =
-                new HouseEntity("Casa 1",
-                        this.roomEntityList,
-                        new DistrictEntity("Ipiranga",new BigDecimal(100)));
-
+        this.houseEntity = HouseEntity.builder()
+                .name("Casa 1")
+                .roomsList(this.roomEntityList)
+                .district(
+                        DistrictEntity.builder()
+                                .district("Ipiranga")
+                                .valueDistrictM2(new BigDecimal(100.00))
+                                .build())
+                .build();
 
         when(houseRepository.findByName(any())).thenReturn(houseEntity);
         when(roomService.getArea(any())).thenCallRealMethod();
@@ -140,20 +153,24 @@ public class HouseServiceTest {
     }
 
     @Test
-    public void getAreaPerRoom (){
+    public void shouldReturnTheAreaPerRoom (){
 
         Double area;
 
-        this.roomEntityList =  Arrays.asList(
-                new RoomEntity("Sala", 3.0,2.0)
-                , new RoomEntity("Quarto", 4.0, 2.0)
-                , new RoomEntity("Cozinha", 2.0, 2.0));
+        this.roomEntityList = Arrays.asList(
+                RoomEntity.builder().name("Sala").length(3.0).width(2.0).build(),
+                RoomEntity.builder().name("Quarto").length(4.0).width(2.0).build(),
+                RoomEntity.builder().name("Cozinha").length(2.0).width(2.0).build());
 
-        this.houseEntity =
-                new HouseEntity("Casa 1",
-                        this.roomEntityList,
-                        new DistrictEntity("Ipiranga",new BigDecimal(100)));
-
+        this.houseEntity = HouseEntity.builder()
+                .name("Casa 1")
+                .roomsList(this.roomEntityList)
+                .district(
+                        DistrictEntity.builder()
+                                .district("Ipiranga")
+                                .valueDistrictM2(new BigDecimal(100.00))
+                                .build())
+                .build();
 
         when(houseRepository.findByName(any())).thenReturn(houseEntity);
         when(roomService.getArea(any())).thenCallRealMethod();
@@ -175,18 +192,22 @@ public class HouseServiceTest {
     }
 
     @Test
-    public void getHouse(){
+    public void shouldReturnAHouse(){
 
-        this.roomEntityList =  Arrays.asList(
-                new RoomEntity("Sala", 3.0,2.0)
-                , new RoomEntity("Quarto", 4.0, 2.0)
-                , new RoomEntity("Cozinha", 2.0, 2.0));
+        this.roomEntityList = Arrays.asList(
+                RoomEntity.builder().name("Sala").length(3.0).width(2.0).build(),
+                RoomEntity.builder().name("Quarto").length(4.0).width(2.0).build(),
+                RoomEntity.builder().name("Cozinha").length(2.0).width(2.0).build());
 
-        this.houseEntity =
-                new HouseEntity("Casa 1",
-                        this.roomEntityList,
-                        new DistrictEntity("Ipiranga",new BigDecimal(100)));
-
+        this.houseEntity = HouseEntity.builder()
+                .name("Casa 1")
+                .roomsList(this.roomEntityList)
+                .district(
+                        DistrictEntity.builder()
+                                .district("Ipiranga")
+                                .valueDistrictM2(new BigDecimal(100.00))
+                                .build())
+                .build();
 
         when(houseRepository.findByName(any())).thenReturn(houseEntity);
 
@@ -196,45 +217,50 @@ public class HouseServiceTest {
     }
 
     @Test
-    public void save(){
+    public void shouldSaveAHouse(){
 
-        this.roomEntityList =  Arrays.asList(
-                new RoomEntity("Sala", 3.0,2.0)
-                , new RoomEntity("Quarto", 4.0, 2.0)
-                , new RoomEntity("Cozinha", 2.0, 2.0));
+        this.roomEntityList = Arrays.asList(
+                RoomEntity.builder().name("Sala").length(3.0).width(2.0).build(),
+                RoomEntity.builder().name("Quarto").length(4.0).width(2.0).build(),
+                RoomEntity.builder().name("Cozinha").length(2.0).width(2.0).build());
 
-        DistrictEntity districtEntity = new  DistrictEntity("Ipiranga",new BigDecimal(100));
+        DistrictEntity districtEntity = DistrictEntity.builder()
+                .district("Ipiranga")
+                .valueDistrictM2(new BigDecimal(100.00))
+                .build();
 
-        this.houseEntity =
-                new HouseEntity("Casa 1",
-                        this.roomEntityList,
-                        districtEntity);
+        this.houseEntity = HouseEntity.builder()
+                .name("Casa 1")
+                .roomsList(this.roomEntityList)
+                .district(districtEntity)
+                .build();
 
         when(this.districtService.findDistrict(any())).thenReturn(districtEntity);
         when(this.houseRepository.save(any())).thenReturn(this.houseEntity);
 
-
         HouseEntity h = this.houseService.save(this.houseEntity);
 
         assertEquals("Casa 1", h.getName());
-
-
     }
 
     @Test
-    public void erroSave(){
+    public void shouldNotSaveAHouseAndReturnADistrictNotFoundException(){
 
-        this.roomEntityList =  Arrays.asList(
-                new RoomEntity("Sala", 3.0,2.0)
-                , new RoomEntity("Quarto", 4.0, 2.0)
-                , new RoomEntity("Cozinha", 2.0, 2.0));
+        this.roomEntityList = Arrays.asList(
+                RoomEntity.builder().name("Sala").length(3.0).width(2.0).build(),
+                RoomEntity.builder().name("Quarto").length(4.0).width(2.0).build(),
+                RoomEntity.builder().name("Cozinha").length(2.0).width(2.0).build());
 
-        DistrictEntity districtEntity = new  DistrictEntity("Ipi", new BigDecimal(10));
+        DistrictEntity districtEntity = DistrictEntity.builder()
+                .district("ipi")
+                .valueDistrictM2(new BigDecimal(10.00))
+                .build();
 
-        this.houseEntity =
-                new HouseEntity("Casa 1",
-                        this.roomEntityList,
-                        districtEntity);
+        this.houseEntity = HouseEntity.builder()
+                .name("Casa 1")
+                .roomsList(this.roomEntityList)
+                .district(districtEntity)
+                .build();
 
         when(this.districtService.findDistrict(any())).thenThrow(DistrictNotFoundException.class);
 
@@ -244,7 +270,7 @@ public class HouseServiceTest {
     }
 
     @Test
-    public void constructorTest(){
+    public void shouldCreateANewStanceOfHouseService(){
         HouseService houseService = new HouseService();
         assertNotNull(houseService);
     }

@@ -15,7 +15,7 @@ public class RoomServiceTest {
     private RoomService roomService = new RoomService();
 
     @Test
-    public void testArea() {
+    public void shouldReturnTheArea() {
         RoomEntity roomEntity = new RoomEntity("name", 3.0, 2.0);
         Double area = this.roomService.getArea(roomEntity);
         assertEquals(6.0, area);

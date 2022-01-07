@@ -56,13 +56,13 @@ public class DistrictServiceTest {
     }
 
     @Test
-    public void contructorTest() {
+    public void shouldCreateANewStanceOfDistrictService() {
         DistrictService districtService = new DistrictService();
         assertNotNull(districtService);
     }
 
     @Test
-    public void convert() {
+    public void shouldReturnADistrictEntity() {
         DistrictEntity districtEntity = new DistrictEntity("Jacana", new BigDecimal(3000));
 
         DistrictRepository mock = Mockito.mock(DistrictRepository.class);
