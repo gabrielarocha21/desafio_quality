@@ -77,14 +77,13 @@ public class IntegrationTests {
                 "    ]\n" +
                 "}";
 
-        MvcResult response = this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
-            .contentType(MediaType.APPLICATION_JSON)
+        MvcResult response = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(payloadJson))
-                .andDo(print()).andExpect(status().isNotFound())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof DistrictNotFoundException))
                 .andReturn();
-
-        Assertions.assertEquals(DistrictNotFoundException.class, Objects.requireNonNull(response.getResolvedException()).getClass());
     }
 
     @Test
@@ -117,12 +116,12 @@ public class IntegrationTests {
                 .content(payloadJson))
                 .andDo(print()).andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType("application/json"))
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
                 .andReturn();
         System.out.println(" ============= PRINT : " + response.getResponse());
         System.out.println(" ============= PRINT : " + response.getResponse().getContentAsString());
-        System.out.println(" ============= PRINT : " + response.getResolvedException());
-        Assertions.assertEquals(MethodArgumentNotValidException.class, Objects.requireNonNull(response.getResolvedException()).getClass());
-//        Assertions.assertEquals(response.getResponse(), Objects.requireNonNull(response.getResolvedException()).getClass());
+        System.out.println(" ============= PRINT : " + MockMvcResultMatchers.jsonPath("$.message").value("Erro de validação na requisição."));
+
     }
 
     @Test
@@ -154,7 +153,7 @@ public class IntegrationTests {
                 .post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payloadJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
 
@@ -189,11 +188,11 @@ public class IntegrationTests {
                 .content(payloadJson))
                 .andExpect(status().isCreated());
 
-        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.get("/area/{prop_name}","Casa 1"))
-                .andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/area/{prop_name}","Casa 1"))
+                .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
+                .andExpect(result -> Assertions.assertEquals(12.0, Double.valueOf(result.getResponse().getContentAsString())))
             .andReturn();
-
-        Assertions.assertEquals(12.0, Double.valueOf(result.getResponse().getContentAsString()));
     }
 }
