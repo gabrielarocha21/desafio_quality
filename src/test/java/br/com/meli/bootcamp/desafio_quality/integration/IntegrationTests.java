@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -310,5 +309,374 @@ public class IntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(result -> Assertions.assertEquals(18.0, Double.valueOf(result.getResponse().getContentAsString())))
             .andReturn();
+    }
+
+
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldNameOfRoomListWithoutUpperCase() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O nome do comodo deve comecar com letra maiuscula"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldNameOfRoomListEmpty() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O campo nao pode estar vazio"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldNameOfRoomListNull() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O campo nao pode estar null"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldNameOfRoomListMaxSize() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Mais de 30 caracteres - Mais de 30 caracteres - Mais de 30 caracteres - Mais de 30 caracteres - Mais de 30 caracteres\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O comprimento do nome do comodo nao pode exceder 30 caracteres"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldLengthOfRoomListNull() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O comprimento do comodo nao pode estar vazio"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldLengthOfRoomListMaxDecimal() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 34.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O comprimento maximo permitido por comodo e de 33 metros"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldLengthOfRoomListMinDecimal() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 0.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O comprimento minimo maior que 0"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldWidthOfRoomListNull() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("A largura do comodo nao pode estar vazia"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldWidthOfRoomListMaxDecimal() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 26.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("A largura maxima permitda e de por comodo e de 25 metros"));
+                })
+                .andReturn();
+    }
+
+    @Test
+    public  void shouldThrowMethodArgumentNotValidExceptionAndMessageErrorInTheFieldWidthOfRoomListMinDecimal() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 0.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(result -> {
+                    Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+                    Assertions.assertTrue(result.getResponse().getContentAsString().contains("O largura minimo maior que 0"));
+                })
+                .andReturn();
     }
 }

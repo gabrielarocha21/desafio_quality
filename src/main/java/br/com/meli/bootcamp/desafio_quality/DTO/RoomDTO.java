@@ -16,7 +16,7 @@ public class RoomDTO {
 
     @NotEmpty(message = "O campo nao pode estar vazio")
     @NotNull(message = "O campo nao pode estar null")
-    @Size(max = 30, message = "O comprimento do comodo nao pode exceder 30 caracteres")
+    @Size(max = 30, message = "O comprimento do nome do comodo nao pode exceder 30 caracteres")
     @Pattern(regexp = "^[A-Z].*$", message = "O nome do comodo deve comecar com letra maiuscula")
     private String name;
 
