@@ -28,6 +28,10 @@ public class HouseService {
         this.houseRepository = new HouseRepository();
     }
 
+    public HouseService(HouseRepository houseRepository) {
+        this.houseRepository = houseRepository;
+    }
+
     public HouseEntity getHouse(String propName) {
 
         return this.houseRepository.findByName(propName);
