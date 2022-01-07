@@ -188,10 +188,9 @@ public class IntegrationTests {
                 .content(payloadJson))
                 .andExpect(status().isCreated());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/area/{prop_name}","Casa 1"))
-                .andDo(print())
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/area/{prop_name}","Casa 1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
                 .andExpect(result -> Assertions.assertEquals(12.0, Double.valueOf(result.getResponse().getContentAsString())))
             .andReturn();
     }
