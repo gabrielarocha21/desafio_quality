@@ -25,7 +25,6 @@ public class DistrictServiceTest {
     public DistrictEntity districtEntity;
 
 
-
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);

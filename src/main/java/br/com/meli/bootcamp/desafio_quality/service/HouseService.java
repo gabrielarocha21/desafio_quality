@@ -19,10 +19,10 @@ public class HouseService {
     private HouseRepository houseRepository;
 
     @Autowired
-    RoomService roomService;
+    private RoomService roomService;
 
     @Autowired
-    DistrictService districtService;
+    private DistrictService districtService;
 
     public HouseService() {
         this.houseRepository = new HouseRepository();
@@ -37,10 +37,10 @@ public class HouseService {
 
         HouseEntity houseEntity = this.houseRepository.findByName(propName);
         Double totalArea = 0.0;
-        for (RoomEntity r : houseEntity.getRoomsList()) {
-            totalArea += this.roomService.getArea(r);
-        }
-        return totalArea;
+        return houseEntity.getRoomsList().stream()
+                .reduce(0.0, (acc, crr)->
+                        acc + this.roomService.getArea(crr), Double::sum
+                );
     }
 
     public RoomEntity getBiggestRoom(String propName) {
@@ -70,10 +70,7 @@ public class HouseService {
     public Map<RoomEntity, Double> getAreaPerRoom(String propName) {
         HouseEntity houseEntity = this.houseRepository.findByName(propName);
         Map<RoomEntity, Double> map = new HashMap<RoomEntity, Double>();
-        for (RoomEntity r : houseEntity.getRoomsList()) {
-            map.put(r, this.roomService.getArea(r));
-        }
-
+        houseEntity.getRoomsList().forEach(r-> map.put(r, this.roomService.getArea(r)));
         return map;
     }
 
