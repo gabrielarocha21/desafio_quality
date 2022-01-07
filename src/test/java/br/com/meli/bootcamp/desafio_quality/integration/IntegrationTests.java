@@ -2,50 +2,22 @@ package br.com.meli.bootcamp.desafio_quality.integration;
 
 import br.com.meli.bootcamp.desafio_quality.DTO.HouseDTO;
 import br.com.meli.bootcamp.desafio_quality.DTO.RoomDTO;
-import br.com.meli.bootcamp.desafio_quality.entities.DistrictEntity;
-import br.com.meli.bootcamp.desafio_quality.entities.HouseEntity;
-import br.com.meli.bootcamp.desafio_quality.entities.RoomEntity;
 import br.com.meli.bootcamp.desafio_quality.exceptions.DistrictNotFoundException;
-import br.com.meli.bootcamp.desafio_quality.exceptions.ValidationError;
-import br.com.meli.bootcamp.desafio_quality.repositories.DistrictRepository;
-import br.com.meli.bootcamp.desafio_quality.repositories.HouseRepository;
-import br.com.meli.bootcamp.desafio_quality.service.DistrictService;
-import br.com.meli.bootcamp.desafio_quality.service.HouseService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.StreamingHttpOutputMessage;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +28,22 @@ public class IntegrationTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+
+    Gson gson = new Gson();
+
+    List<RoomDTO> roomDTOList = Arrays.asList(
+            RoomDTO.builder().name("Sala").length(3.0).width(2.0).build(),
+            RoomDTO.builder().name("Quarto").length(4.0).width(2.0).build(),
+            RoomDTO.builder().name("Cozinha").length(2.0).width(2.0).build());
+
+    HouseDTO houseDto = HouseDTO.builder()
+            .name("Casa 1")
+            .roomsList(roomDTOList)
+            .district("cacupe")
+            .build();
+
+    String payload = gson.toJson(houseDto);
 
     @Test
     public  void testPostRegisterHouseShouldThrowDistrictNotFoundException() throws Exception {
@@ -89,6 +77,78 @@ public class IntegrationTests {
                 .andExpect(status().isNotFound())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof DistrictNotFoundException))
                 .andReturn();
+    }
+
+    @Test void testGetBigestRoom() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.payload))
+                .andExpect(status().isCreated());
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/biggest_room/{prop_name}", "Casa 1"))
+                .andExpect(status().isOk())
+                .andExpect(result -> Assertions.assertTrue(result.getResponse().getContentAsString().contains("Quarto")))
+                .andDo(print());
+    }
+
+    @Test
+    public void testGetValue() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.payload))
+                .andExpect(status().isCreated());
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+            .get("/value/{prop_name}", "Casa 1")
+        ).andExpect(response -> Assertions.assertTrue(response.getResponse().getContentAsString().contains("171036")));
+    }
+
+    @Test
+    public void testGetAreaPerRoom() throws Exception {
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.payload))
+                .andExpect(status().isCreated());
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+            .get("/area_per_room/{prop_name}","Casa 1"))
+            .andExpect(status().isOk())
+            .andDo(print());
+         /*   .andExpect(result -> {
+
+                Double area;
+
+                String response = result.getResponse().getContentAsString();
+
+                Map<RoomEntity,Double> map =
+                        gson.fromJson(response, Map.class);
+
+                System.out.println("----------> " + map);
+
+                area = map.entrySet().stream()
+                        .filter(r -> r.getKey().getName().equals("Sala")).findFirst().get().getValue();
+
+                assertEquals(6.0, area);
+
+                area = map.entrySet().stream()
+                        .filter(r -> r.getKey().getName().equals("Quarto")).findFirst().get().getValue();
+
+                assertEquals(8.0, area);
+
+                area = map.entrySet().stream()
+                        .filter(r -> r.getKey().getName().equals("Cozinha")).findFirst().get().getValue();
+
+                assertEquals(4.0, area);
+
+            }); */
     }
 
     @Test
@@ -152,6 +212,7 @@ public class IntegrationTests {
                 "        }\n" +
                 "    ]\n" +
                 "}";
+
 
         this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -238,38 +299,16 @@ public class IntegrationTests {
     @Test
     public void houseControllerGetAreaOutPut() throws Exception {
 
-        String payloadJson = "{\n" +
-                "    \"name\": \"Casa 1\",\n" +
-                "    \"district\": \"cacupe\",\n" +
-                "    \"roomsList\": [\n" +
-                "        {\n" +
-                "            \"name\": \"Sala\",\n" +
-                "            \"length\": 2.0,\n" +
-                "            \"width\": 2.0\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"name\": \"Quarto\",\n" +
-                "            \"length\": 2.0,\n" +
-                "            \"width\": 2.0\n" +
-                "        },\n" +
-                "          {\n" +
-                "            \"name\": \"Cozinha\",\n" +
-                "            \"length\": 2.0,\n" +
-                "            \"width\": 2.0\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
-
         this.mockMvc.perform(MockMvcRequestBuilders
                 .post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(payloadJson))
+                .content(this.payload))
                 .andExpect(status().isCreated());
 
         this.mockMvc.perform(MockMvcRequestBuilders
                 .get("/area/{prop_name}","Casa 1"))
                 .andExpect(status().isOk())
-                .andExpect(result -> Assertions.assertEquals(12.0, Double.valueOf(result.getResponse().getContentAsString())))
+                .andExpect(result -> Assertions.assertEquals(18.0, Double.valueOf(result.getResponse().getContentAsString())))
             .andReturn();
     }
 }
