@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -53,21 +54,28 @@ public class IntegrationTests {
 
     @Test
     public  void testPostRegisterHouseShouldThrowDistrictNotFoundException() throws Exception {
-        HouseDTO payloadDTO = HouseDTO.builder()
-                .name("Casa 1")
-                .roomsList(
-                        Arrays.asList(
-                                RoomDTO.builder().name("Sala").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Quarto").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Cozinha").length(2.0).width(2.0).build()))
-                .district("Ipiranga")
-                .build();
 
-        ObjectWriter writer = new ObjectMapper()
-                .configure(SerializationFeature.WRAP_ROOT_VALUE, false)
-                .writer();
-
-        String payloadJson = writer.writeValueAsString(payloadDTO);
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"ipiranga\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
 
         MvcResult response = this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
             .contentType(MediaType.APPLICATION_JSON)
@@ -79,84 +87,107 @@ public class IntegrationTests {
         Assertions.assertEquals(DistrictNotFoundException.class, Objects.requireNonNull(response.getResolvedException()).getClass());
     }
 
-
     @Test
-    public  void testPostRegisterHouseShouldReturnHouseDTO() throws Exception {
+    public  void testPostRegisterHouseShouldThrowMethodArgumentNotValidException() throws Exception {
 
-        HouseDTO payloadDTO = HouseDTO.builder()
-                .name("Casa 1")
-                .roomsList(
-                        Arrays.asList(
-                                RoomDTO.builder().name("Sala").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Quarto").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Cozinha").length(2.0).width(2.0).build()))
-                .district("cacupe")
-                .build();
-
-        HouseDTO responseDTO = HouseDTO.builder()
-                .name("Casa 1")
-                .roomsList(
-                        Arrays.asList(
-                                RoomDTO.builder().name("Sala").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Quarto").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Cozinha").length(2.0).width(2.0).build()))
-                .district("cacupe")
-                .build();
-
-        ObjectWriter writer = new ObjectMapper()
-                .configure(SerializationFeature.WRAP_ROOT_VALUE, false)
-                .writer();
-
-        String payloadJson = writer.writeValueAsString(payloadDTO);
-        String responseJson = writer.writeValueAsString(responseDTO);
+        String payloadJson = "{\n" +
+                "    \"name\": \"casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
 
         MvcResult response = this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payloadJson))
-                .andDo(print()).andExpect(status().isOk())
+                .andDo(print()).andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType("application/json"))
                 .andReturn();
+        System.out.println(" ============= PRINT : " + response.getResponse());
+        System.out.println(" ============= PRINT : " + response.getResponse().getContentAsString());
+        System.out.println(" ============= PRINT : " + response.getResolvedException());
+        Assertions.assertEquals(MethodArgumentNotValidException.class, Objects.requireNonNull(response.getResolvedException()).getClass());
+//        Assertions.assertEquals(response.getResponse(), Objects.requireNonNull(response.getResolvedException()).getClass());
+    }
 
-        Assertions.assertEquals(responseJson, response.getResponse().getContentAsString());
+    @Test
+    public  void testPostRegisterHouseShouldReturnHouseDTO() throws Exception {
+
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+                .andExpect(status().isOk());
     }
 
 
     @Test
     public void houseControllerGetAreaOutPut() throws Exception {
 
-        HouseDTO payloadDTO = HouseDTO.builder()
-                .name("Casa 1")
-                .roomsList(
-                        Arrays.asList(
-                                RoomDTO.builder().name("Sala").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Quarto").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Cozinha").length(2.0).width(2.0).build()))
-                .district("cacupe")
-                .build();
+        String payloadJson = "{\n" +
+                "    \"name\": \"Casa 1\",\n" +
+                "    \"district\": \"cacupe\",\n" +
+                "    \"roomsList\": [\n" +
+                "        {\n" +
+                "            \"name\": \"Sala\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"Quarto\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        },\n" +
+                "          {\n" +
+                "            \"name\": \"Cozinha\",\n" +
+                "            \"length\": 2.0,\n" +
+                "            \"width\": 2.0\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
 
-        HouseDTO responseDTO = HouseDTO.builder()
-                .name("Casa 1")
-                .roomsList(
-                        Arrays.asList(
-                                RoomDTO.builder().name("Sala").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Quarto").length(2.0).width(2.0).build(),
-                                RoomDTO.builder().name("Cozinha").length(2.0).width(2.0).build()))
-                .district("cacupe")
-                .build();
-
-        ObjectWriter writer = new ObjectMapper()
-                .configure(SerializationFeature.WRAP_ROOT_VALUE, false)
-                .writer();
-
-        String payloadJson = writer.writeValueAsString(payloadDTO);
-        String responseJson = writer.writeValueAsString(responseDTO);
-
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/register")
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payloadJson))
-                .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andReturn();
+                .andExpect(status().isCreated());
 
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.get("/area/{prop_name}","Casa 1"))
                 .andDo(print()).andExpect(status().isOk())

@@ -7,8 +7,10 @@ import br.com.meli.bootcamp.desafio_quality.service.HouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/")
@@ -42,11 +44,16 @@ public class HouseController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerHouse(@Valid @RequestBody HouseDTO houseDto) {
+    public ResponseEntity<?> registerHouse(@Valid @RequestBody HouseDTO houseDto, UriComponentsBuilder uriBuilder) {
         HouseEntity houseEntity = HouseEntity.convertToEntity(houseDto);
         houseEntity.setDistrict(this.districtService.convertToEntity(houseDto.getDistrict()));
 
             houseService.save(houseEntity);
-            return ResponseEntity.ok(HouseDTO.convertToDTO(houseEntity));
+            return ResponseEntity.created(
+                    uriBuilder
+                            .path("/register")
+                            .buildAndExpand("register")
+                            .toUri()
+            ).body(HouseDTO.convertToDTO(houseEntity));
     }
 }
