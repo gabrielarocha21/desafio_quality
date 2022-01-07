@@ -30,6 +30,22 @@ public class IntegrationTests {
     @Autowired
     private MockMvc mockMvc;
 
+
+    Gson gson = new Gson();
+
+    List<RoomDTO> roomDTOList = Arrays.asList(
+            RoomDTO.builder().name("Sala").length(3.0).width(2.0).build(),
+            RoomDTO.builder().name("Quarto").length(4.0).width(2.0).build(),
+            RoomDTO.builder().name("Cozinha").length(2.0).width(2.0).build());
+
+    HouseDTO houseDto = HouseDTO.builder()
+            .name("Casa 1")
+            .roomsList(roomDTOList)
+            .district("cacupe")
+            .build();
+
+    String payload = gson.toJson(houseDto);
+
     @Test
     public  void testPostRegisterHouseShouldThrowDistrictNotFoundException() throws Exception {
 
@@ -64,32 +80,47 @@ public class IntegrationTests {
                 .andReturn();
     }
 
-    @Test
-    public void testGetAreaPerRoom() throws Exception {
-
-        Gson gson = new Gson();
-
-        List<RoomDTO> roomDTOList = Arrays.asList(
-                RoomDTO.builder().name("Sala").length(3.0).width(2.0).build(),
-                RoomDTO.builder().name("Quarto").length(4.0).width(2.0).build(),
-                RoomDTO.builder().name("Cozinha").length(2.0).width(2.0).build());
-
-        HouseDTO houseDto = HouseDTO.builder()
-                .name("Casa 1")
-                .roomsList(roomDTOList)
-                .district("cacupe")
-                .build();
-
-        String payload = gson.toJson(houseDto);
+    @Test void testGetBigestRoom() throws Exception {
 
         this.mockMvc.perform(MockMvcRequestBuilders
                 .post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(payload))
+                .content(this.payload))
                 .andExpect(status().isCreated());
 
         this.mockMvc.perform(MockMvcRequestBuilders
-            .get("/area_per_room/Casa 1"))
+                .get("/biggest_room/{prop_name}", "Casa 1"))
+                .andExpect(status().isOk())
+                .andExpect(result -> Assertions.assertTrue(result.getResponse().getContentAsString().contains("Quarto")))
+                .andDo(print());
+    }
+
+    @Test
+    public void testGetValue() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.payload))
+                .andExpect(status().isCreated());
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+            .get("/value/{prop_name}", "Casa 1")
+        ).andExpect(response -> Assertions.assertTrue(response.getResponse().getContentAsString().contains("171036")));
+    }
+
+    @Test
+    public void testGetAreaPerRoom() throws Exception {
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.payload))
+                .andExpect(status().isCreated());
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+            .get("/area_per_room/{prop_name}","Casa 1"))
             .andExpect(status().isOk())
             .andDo(print());
          /*   .andExpect(result -> {
@@ -155,7 +186,8 @@ public class IntegrationTests {
                 .andReturn();
         System.out.println(" ============= PRINT : " + response.getResponse());
         System.out.println(" ============= PRINT : " + response.getResponse().getContentAsString());
-        System.out.println(" ============= PRINT : " + MockMvcResultMatchers.jsonPath("$.message").value("Erro de validação na requisição."));
+        System.out.println(" ============= PRINT : " + MockMvcResultMatchers.jsonPath("$.message")
+                .value("Erro de validação na requisição."));
 
     }
 
