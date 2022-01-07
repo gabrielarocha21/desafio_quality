@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
@@ -272,6 +273,13 @@ public class HouseServiceTest {
     @Test
     public void shouldCreateANewStanceOfHouseService(){
         HouseService houseService = new HouseService();
+        assertNotNull(houseService);
+    }
+
+    @Test
+    public void shouldCreateANewStanceOfHouseServicePassingTheRepository(){
+        HouseRepository mock = Mockito.mock(HouseRepository.class);
+        HouseService houseService = new HouseService(mock);
         assertNotNull(houseService);
     }
 
